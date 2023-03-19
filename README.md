@@ -1,4 +1,4 @@
-# Artefact_Detection
+# Seizure Detection
 This repo contains Python code to detect seizure activity from data collected via implanted electrodes in mice brain.
 
 The data used contains 15 mins of baseline activity and 30 mins of seizure activity sampled at 10KHz. This data is partitioned and labeled into 1s windows for classification.
