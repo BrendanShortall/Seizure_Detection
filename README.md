@@ -14,4 +14,6 @@ In feature_extraction.py there is code that extracts normalized features for thi
 
 In ml_models.ipynb I conduct both an SVM and KNearestNeighbors algorithm (K=7). The data is randomly split into train (75% of samples) and test (25% of samples). Multiple random states have been trained and tested to ensure solidarity amongst cases.
 
+In both models, I have achieved a test accuracy of 100%. 
+
 Future work could include some signal processing leading into the feature extraction to account for signal artefacts. However, the application for this algorithm is time-dependent so it may not be worth the overhead of doing so (another reason why ML felt like a better approach). 
