@@ -108,6 +108,28 @@ def getSpikes(data, threshold):
     # Return the array containing the number of spikes for each sample
     return numSpikes
 
+
+def feature_extraction(data, sample_rate, threshold):
+    n = len(data)
+    #Compute band powers
+    powers = np.zeros((n,5))
+    for i in range(n):
+        powers[i] = power_measures(data[i], sample_rate, output=False).to_numpy()
+    #Get number of action potentials for each sample
+    #Could normalize this by dividing by sample rate
+    numSpikes = getSpikes(data, threshold)
+
+    #Get mean amplitudes
+    means = np.mean(abs(data), axis=1)
+    means = means.reshape(n, 1)
+
+    data_final = np.concatenate((numSpikes,means,powers), axis=1)
+    df = pd.DataFrame(data_final)
+    #Want to scale the data into Z-scores so that a subset of features isn't valued higher than others.
+    #only issue is that we must track the mean and stdev for each feature for new data
+    df = df.apply(scipy.stats.zscore)
+    return df
+
 def main():
     #Load data
     b1 = pd.read_csv(r'C:\Users\shortallb\Documents\Research\Seizure Detection\baseline.csv', header=None).to_numpy()
@@ -119,30 +141,19 @@ def main():
     labels = data[:,10000]
     data = np.delete(data, 10000, axis=1)
     sample_rate = 10000 # in hz
-    n = len(data)
-    
-    #Compute band powers
-    powers = np.zeros((n,5))
-    for i in range(n):
-        powers[i] = power_measures(data[i], sample_rate, output=False).to_numpy()
-    
+   
+    #Compute baseline statistics for spike detection
     base_mean = np.mean(b1[:,:-1])
     base_stdev = np.std(b1[:,:-1])
     threshold = [base_mean + 4.25*base_stdev, base_mean - 4.25*base_stdev]
 
-    #Get number of action potentials for each sample
-    #Could normalize this by dividing by sample rate
-    numSpikes = getSpikes(data, threshold)
+    df = feature_extraction(data, sample_rate, threshold)
 
-    #Get mean amplitudes
-    means = np.mean(abs(data), axis=1)
-    means = means.reshape(n, 1)
-
-    data_final = np.concatenate((numSpikes,means,powers), axis=1)
-    df = pd.DataFrame(data_final)
-    df.to_csv("data.csv")
+    #Convert to CSV and output
+    df.to_csv("./data.csv")
     df = pd.DataFrame(labels)
-    df.to_csv("labels.csv")
+    df.to_csv("./labels.csv")
+
 if __name__ == '__main__':
     main()
 
