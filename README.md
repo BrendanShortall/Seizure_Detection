@@ -16,4 +16,4 @@ In ml_models.ipynb I conduct both an SVM and KNearestNeighbors algorithm (K=7). 
 
 In both models, I have achieved a test accuracy of 100%. 
 
-Future work could include some signal processing leading into the feature extraction to account for signal artefacts. However, the application for this algorithm is time-dependent so it may not be worth the overhead of doing so (another reason why ML felt like a better approach). 
+Future work could include some signal processing leading into the feature extraction to account for signal artefacts. However, the application for this algorithm is time-dependent so it may not be worth the overhead of doing so (another reason why ML felt like a better approach). I will also continue to develop better instructions for others to test on their own data.
