@@ -4,7 +4,7 @@ This repo contains Python code to detect seizure activity from data collected vi
 The data used contains 15 mins of baseline activity and 30 mins of seizure activity sampled at 10KHz. This data is partitioned and labeled into 1s windows for classification. A second set of data was added that contains 60 mins of seizure activity and 15 min of baseline activity sampled at 1KHz - this data is also partioned into 1s windows.  
 
 On the original data:
-An LSTM model is created using the Keras Python library, and includes K fold cross validation with K = 5. The accuracy obtained on the first pass is 68.9%. This is without any filtering or signal processing. 
+An LSTM model is created using the Keras Python library, and includes K fold cross validation with K = 5. This code is found in seizure_detection.ipynb. The accuracy obtained on the first pass is 68.9%. This is without any filtering or signal processing. 
 
 Callbacks are included to backup the model following each epoch, to terminate the training process once a certain threshold of change in accuracy is not met, and to output the training progress into a .csv file. 
 
