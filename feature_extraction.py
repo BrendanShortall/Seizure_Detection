@@ -14,7 +14,7 @@ def bandpower(data, sf, band, output = False):
     # Compute the periodogram (Welch)
     freqs, psd = welch(data, 
                        sf, 
-                       nperseg=10000,
+                       nperseg=sf,
                        scaling='density', 
                        axis=0)
     
@@ -136,19 +136,26 @@ def main():
     s1 = pd.read_csv(r'C:\Users\shortallb\Documents\Research\Seizure Detection\seizure1.csv', header=None).to_numpy()
     s2 = pd.read_csv(r'C:\Users\shortallb\Documents\Research\Seizure Detection\seizure2.csv', header=None).to_numpy()
 
+    b2 = pd.read_csv(r'C:\Users\shortallb\Documents\Github\Seizure_Detection\baseline2.csv', header=None).to_numpy()
+    s3 = pd.read_csv(r'C:\Users\shortallb\Documents\Github\Seizure_Detection\seizure3.csv', header=None).to_numpy()
+
     #split data into data and labels
     data = np.concatenate((b1,s1,s2), axis = 0)
     labels = data[:,10000]
     data = np.delete(data, 10000, axis=1)
-    sample_rate = 10000 # in hz
-   
+    #Create seperate  matrix for new data
+    data_new = np.concatenate((b2,s3), axis=0)
+    labels = np.concatenate((labels, data_new[:,1000]), axis = 0)
+    data_new = np.delete(data_new, 1000, axis=1)
+    
     #Compute baseline statistics for spike detection
-    base_mean = np.mean(b1[:,:-1])
-    base_stdev = np.std(b1[:,:-1])
+    base_mean = np.mean(np.concatenate((b1[:,:-1].flatten(), b2[:,:-1].flatten())))
+    base_stdev = np.std(np.concatenate((b1[:,:-1].flatten(), b2[:,:-1].flatten())))
     threshold = [base_mean + 4.25*base_stdev, base_mean - 4.25*base_stdev]
 
-    df = feature_extraction(data, sample_rate, threshold)
-
+    df = feature_extraction(data, 10000, threshold)
+    df_new = feature_extraction(data_new, 1000, threshold)
+    df = pd.concat((df,df_new), axis=0)
     #Convert to CSV and output
     df.to_csv("./data.csv")
     df = pd.DataFrame(labels)
